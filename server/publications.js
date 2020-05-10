@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 
-Meteor.publish('userData', function() {
+import '../imports/api/settings/publications';
+
+Meteor.publish('userData', function () {
   const userId = this.userId;
   const user = Meteor.users.findOne({ _id: userId });
   if (user?.admin) {
@@ -16,7 +18,7 @@ Meteor.publish('userData', function() {
   }
 });
 
-Meteor.publish('currentUser', function() {
+Meteor.publish('currentUser', function () {
   const userId = this.userId;
   if (userId) {
     return Meteor.users.find(

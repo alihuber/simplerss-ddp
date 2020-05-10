@@ -6,7 +6,7 @@ import HomePage from './HomePage.js';
 import Login from './Login.js';
 import NotFoundPage from './NotFoundPage';
 import Users from './admin/Users';
-// import Settings from './Settings';
+import Settings from './settings/Settings';
 // import Messages from './Messages';
 
 const Routing = ({ LayoutComponent }) => {
@@ -24,6 +24,9 @@ const Routing = ({ LayoutComponent }) => {
             </Route>
             <Route exact path="/users">
               <Users />
+            </Route>
+            <Route exact path="/settings">
+              <Settings />
             </Route>
             <Route exact>
               <NotFoundPage />

@@ -1,9 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { onPageLoad } from 'meteor/server-render';
+import loMap from 'lodash/map';
 import './agenda';
 import './publications.js';
 import '../imports/startup/server/methods';
+import { Settings } from '../imports/api/settings/constants';
 
 const { createLogger, transports, format } = require('winston');
 
@@ -28,7 +30,20 @@ Meteor.startup(() => {
     Accounts.setPassword(newUser._id, pw);
   }
 
-  logger.info(`\nserver started... registered users: ${Meteor.users.find({}).fetch().length}`);
+  // find users without settings
+  const allUserIds = loMap(Meteor.users.find({}, { fields: { _id: 1 } }).fetch(), '_id');
+  const missingIds = allUserIds.filter((u) => !Settings.findOne({ userId: u }));
+  missingIds.forEach((userId) => {
+    const settingsObj = {
+      userId,
+      interval: 10,
+      folders: [],
+    };
+    Settings.insert(settingsObj);
+  });
+
+
+  logger.info(`server started... registered users: ${Meteor.users.find({}).fetch().length}`);
 });
 
 onPageLoad((sink) => {

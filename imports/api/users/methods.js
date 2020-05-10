@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Match, check } from 'meteor/check';
 import { Accounts } from 'meteor/accounts-base';
 
+import { Settings } from '../settings/constants';
+
 const { createLogger, transports, format } = require('winston');
 
 const { combine, timestamp, label, printf } = format;
@@ -63,6 +65,15 @@ Meteor.methods({
       const admin = data.admin || false;
       Meteor.users.update({ _id: newId }, { $set: { admin } });
       logger.info(`created user with id ${newId}, set ADMIN to ${admin}`);
+      if (admin) {
+        const settingsObj = {
+          userId: newId,
+          interval: 10,
+          folders: [],
+        };
+        const settingsId = Settings.insert(settingsObj);
+        logger.info(`created settings with id ${settingsId} for user ${newId}`);
+      }
     } else {
       throw new Meteor.Error('add user error');
     }
