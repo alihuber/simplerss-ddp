@@ -17,14 +17,6 @@ const logger = createLogger({
 });
 
 Meteor.methods({
-  // resetSettings(userId) {
-  //   check(userId, String);
-  //   if (Meteor.userId() === userId) {
-  //     Settings.update({ userId }, { interval: '10', folders: [], userId: Meteor.userId() });
-  //   } else {
-  //     throw new Meteor.Error('reset settings error');
-  //   }
-  // },
   updateSettings(data, userId) {
     const subscriptionPattern = { url: String };
     const folderPattern = { folderName: String, subscriptions: Match.Maybe([subscriptionPattern]) };
@@ -35,11 +27,11 @@ Meteor.methods({
     };
     check(data, pattern);
     check(userId, String);
-    // _.extend(data, { nextEvent: new Date() });
     if (userId === this.userId) {
       data.nextEvent = new Date();
       data.userId = userId;
       Settings.upsert({ userId: userId }, data);
+      logger.info(`update settings for ${userId}, set nextEvent to ${data.nextEvent}`);
       // run fetchjob anew because maybe we altered the next event setting
       // FetchJob.fetchRSS();
     } else {

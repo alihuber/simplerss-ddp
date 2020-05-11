@@ -4,6 +4,7 @@ import { resetDatabase } from 'meteor/xolvio:cleaner';
 import assert from 'assert';
 
 import '../imports/api/users/methods';
+import { Settings } from '../imports/api/settings/constants';
 
 if (Meteor.isServer) {
   describe('removeUser method', () => {
@@ -70,6 +71,30 @@ if (Meteor.isServer) {
       assert.equal(usersCountAfter, 2);
       assert.equal(Meteor.users.findOne({ username: 'foo' }).username, 'foo');
       assert.equal(Meteor.users.findOne({ username: 'foo' }).admin, true);
+    });
+
+    it('creates settigs for user', () => {
+      resetDatabase();
+      const adminId = Accounts.createUser({
+        username: 'admin',
+        password: 'adminadmin',
+      });
+      Meteor.users.update({ _id: adminId }, { $set: { admin: true } });
+      const usersCount = Meteor.users.find().fetch().length;
+      const settingsCount = Settings.find().fetch().length;
+      assert.equal(usersCount, 1);
+      assert.equal(settingsCount, 0);
+
+      const method = Meteor.server.method_handlers.addUser;
+      const data = { username: 'foo', password: 'barbarbar', admin: true };
+      method.apply({ userId: adminId }, [data]);
+      const usersCountAfter = Meteor.users.find().fetch().length;
+      const settingsCountAfter = Settings.find().fetch().length;
+      assert.equal(usersCountAfter, 2);
+      assert.equal(settingsCountAfter, 1);
+      assert.equal(Meteor.users.findOne({ username: 'foo' }).username, 'foo');
+      assert.equal(Meteor.users.findOne({ username: 'foo' }).admin, true);
+      assert.equal(Settings.findOne().userId, Meteor.users.findOne({ username: 'foo' })._id);
     });
 
     it('if admin not set, it creates non-admin', () => {
