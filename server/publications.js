@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import '../imports/api/settings/publications';
+import '../imports/api/messages/publications';
 
 Meteor.publish('userData', function () {
   const userId = this.userId;

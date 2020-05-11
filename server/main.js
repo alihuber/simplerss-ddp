@@ -2,10 +2,12 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { onPageLoad } from 'meteor/server-render';
 import loMap from 'lodash/map';
-import './agenda';
 import './publications.js';
 import '../imports/startup/server/methods';
 import { Settings } from '../imports/api/settings/constants';
+// import FetchJob from './fetchJob';
+// import agenda from './agenda';
+import './agenda';
 
 const { createLogger, transports, format } = require('winston');
 
@@ -53,3 +55,12 @@ onPageLoad((sink) => {
   //   `Server time: ${new Date}`
   // );
 });
+
+// agenda.define('fetchRss', async (job) => {
+//   await FetchJob.fetchRSS();
+// });
+
+// (async function () { // IIFE to give access to async/await
+//   await agenda.start();
+//   await agenda.every('1 minute', 'fetchRss');
+// }());

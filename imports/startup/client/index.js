@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import 'uniforms-bridge-simple-schema-2';
 
 import '../../api/settings/methods';
+import '../../api/messages/methods';
 
 Meteor.startup(() => {
   render(<Root />, document.getElementById('render-target'));
