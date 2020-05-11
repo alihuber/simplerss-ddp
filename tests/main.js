@@ -4,10 +4,10 @@ import assert from 'assert';
 import './users-methods.test';
 import './settings-methods.test';
 
-describe('playground', function () {
+describe('simplerss', function () {
   it('package.json has correct name', async function () {
     const { name } = await import('../package.json');
-    assert.strictEqual(name, 'playground');
+    assert.strictEqual(name, 'simplerss');
   });
 
   if (Meteor.isClient) {

@@ -1,5 +1,5 @@
 {
-  "name": "playground",
+  "name": "simplerss",
   "private": true,
   "scripts": {
     "start": "meteor run",
