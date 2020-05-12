@@ -6,6 +6,19 @@ import express from 'express';
 
 import FetchJob from './fetchJob';
 
+const { createLogger, transports, format } = require('winston');
+
+const { combine, timestamp, label, printf } = format;
+
+const loggerFormat = printf(({ level, message, label, timestamp }) => {
+  return `${timestamp} [${label}] ${level}: ${message}`;
+});
+
+const logger = createLogger({
+  format: combine(label({ label: 'server/agenda' }), timestamp(), loggerFormat),
+  transports: [new transports.Console()],
+});
+
 const app = express();
 
 // eslint-disable-next-line
@@ -23,6 +36,7 @@ agenda.define('fetchRss', async (job) => {
 (async function () {
   await agenda.start();
   await agenda.every('1 minute', 'fetchRss');
+  logger.info('agenda started...');
 }());
 
 

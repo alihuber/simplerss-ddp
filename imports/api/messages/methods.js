@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
+import { Random } from 'meteor/random';
 import { Match, check } from 'meteor/check';
+import moment from 'moment';
 
 import { Messages } from './constants';
 
@@ -17,9 +19,5 @@ const logger = createLogger({
 });
 
 Meteor.methods({
-  insertTestmessages() {
-    if (!Meteor.users.findOne(this.userId).admin) {
-      throw new Meteor.Error('unauthorized');
-    }
-  },
+
 });

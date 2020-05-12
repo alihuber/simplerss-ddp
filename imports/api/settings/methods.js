@@ -33,7 +33,7 @@ Meteor.methods({
       Settings.upsert({ userId: userId }, data);
       logger.info(`update settings for ${userId}, set nextEvent to ${data.nextEvent}`);
       // run fetchjob anew because maybe we altered the next event setting
-      // FetchJob.fetchRSS();
+      Meteor.call('runFetchJob');
     } else {
       throw new Meteor.Error('update settings error');
     }

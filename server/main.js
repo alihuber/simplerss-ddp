@@ -5,8 +5,6 @@ import loMap from 'lodash/map';
 import './publications.js';
 import '../imports/startup/server/methods';
 import { Settings } from '../imports/api/settings/constants';
-// import FetchJob from './fetchJob';
-// import agenda from './agenda';
 import './agenda';
 
 const { createLogger, transports, format } = require('winston');
@@ -43,8 +41,6 @@ Meteor.startup(() => {
     };
     Settings.insert(settingsObj);
   });
-
-
   logger.info(`server started... registered users: ${Meteor.users.find({}).fetch().length}`);
 });
 
@@ -55,12 +51,3 @@ onPageLoad((sink) => {
   //   `Server time: ${new Date}`
   // );
 });
-
-// agenda.define('fetchRss', async (job) => {
-//   await FetchJob.fetchRSS();
-// });
-
-// (async function () { // IIFE to give access to async/await
-//   await agenda.start();
-//   await agenda.every('1 minute', 'fetchRss');
-// }());

@@ -14,7 +14,7 @@ const loggerFormat = printf(({ level, message, label, timestamp }) => {
 });
 
 const logger = createLogger({
-  format: combine(label({ label: 'FetchJob' }), timestamp(), loggerFormat),
+  format: combine(label({ label: 'server/fetchJob' }), timestamp(), loggerFormat),
   transports: [new transports.Console()],
 });
 
@@ -42,7 +42,11 @@ const parseMessages = (setting) => {
                   if (foundMessage) {
                     return;
                   }
-                  // TODO: if there is already one message from the same creator for this minute, dismiss
+                  // if guid is already present: don't save message again
+                  const messageGuid = Messages.findOne({ guid: item.guid });
+                  if (messageGuid) {
+                    return;
+                  }
                   const mess = { folder: folder.folderName, userId: setting.userId, isRead: false, isMarkedRead: false };
                   mess.creator = item.creator || item.author || res.title;
                   mess.date = item.date;
@@ -89,9 +93,10 @@ const markMessages = (user) => {
 };
 
 export default class FetchJob {
-  static async fetchRSS() {
+  static fetchRSS() {
     const dueSettings = Settings.find({ nextEvent: { $lte: new Date() } }).fetch();
-    dueSettings.forEach((setting) => {
+    logger.log({ level: 'info', message: 'running fetch job..' });
+    dueSettings.forEach((setting, idx, array) => {
       const user = Meteor.users.findOne({ _id: setting.userId });
       logger.log({ level: 'info', message: `running fetch job for user ${user.username} with id ${user._id}` });
 
@@ -105,13 +110,15 @@ export default class FetchJob {
       } else {
         event = moment(new Date());
       }
-      event.add(Number(setting.interval), 'minutes');
+      // sanitize nextEvent was set in the past
+      const hoursBefore = event.hours();
+      const minutesBefore = event.minutes();
+      const newEvent = moment().hours(hoursBefore).minutes(minutesBefore).add(Number(setting.interval), 'minutes');
       logger.log({
         level: 'info',
-        message: `setting new next event on setting ${setting._id}
-        to ${event} for user ${user.username} with id ${user._id}`,
+        message: `setting new next event on setting ${setting._id} to ${newEvent} for user ${user.username} with id ${user._id}`,
       });
-      Settings.update({ _id: setting._id }, { $set: { nextEvent: event.toDate() } });
+      Settings.update({ _id: setting._id }, { $set: { nextEvent: newEvent.toDate() } });
     });
   }
 }
