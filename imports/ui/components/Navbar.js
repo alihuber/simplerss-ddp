@@ -1,11 +1,14 @@
 import React, { useContext } from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
+import { Counts } from 'meteor/tmeasday:publish-counts';
 import { useHistory } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
-import { Menu } from 'antd';
+import { Menu, Badge } from 'antd';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import MenuOutlined from '@ant-design/icons/MenuOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
+import MessageOutlined from '@ant-design/icons/MessageOutlined';
 import { toast } from 'react-toastify';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 import ServerConnectionContext from '../contexts/ServerConnectionContext';
@@ -97,12 +100,30 @@ const Navbar = () => {
   const history = useHistory();
   const currentUser = useContext(CurrentUserContext);
   const connectionStatus = useContext(ServerConnectionContext);
+  const messageCount = useTracker(() => {
+    if (currentUser) {
+      Meteor.subscribe('messageCount', currentUser._id);
+      return Counts.get('messageCountForUser');
+    }
+  });
   return (
     <Menu theme="dark" mode="horizontal">
       <Menu.Item key="1" onClick={() => handleHome(history)}>
         Home
       </Menu.Item>
       {connectionStatus === 'connected' ? userMenu(currentUser, history) : null}
+      {currentUser ? (
+        <Menu.Item
+          key="6"
+          style={{ float: 'right' }}
+          onClick={() => console.log('foo')}
+        >
+          <Badge count={messageCount}>
+            <MessageOutlined />
+          </Badge>
+        </Menu.Item>
+      )
+        : null}
     </Menu>
   );
 };
