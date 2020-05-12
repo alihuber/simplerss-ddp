@@ -3,12 +3,13 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import { useHistory } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
-import { Menu, Badge } from 'antd';
+import { Menu, Badge, Affix } from 'antd';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import MenuOutlined from '@ant-design/icons/MenuOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
 import MessageOutlined from '@ant-design/icons/MessageOutlined';
+import RedoOutlined from '@ant-design/icons/RedoOutlined';
 import { toast } from 'react-toastify';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 import ServerConnectionContext from '../contexts/ServerConnectionContext';
@@ -29,6 +30,10 @@ const handleUsers = (history) => {
 
 const handleHome = (history) => {
   history.push('/');
+};
+
+const handleMessages = (history) => {
+  history.push('/messages');
 };
 
 const handleLogout = (history) => {
@@ -105,18 +110,20 @@ const Navbar = () => {
       Meteor.subscribe('messageCount', currentUser._id);
       return Counts.get('messageCountForUser');
     }
-  });
+  }, [currentUser && currentUser._id]);
   return (
     <Menu theme="dark" mode="horizontal">
       <Menu.Item key="1" onClick={() => handleHome(history)}>
         Home
       </Menu.Item>
-      {connectionStatus === 'connected' ? userMenu(currentUser, history) : null}
+      {connectionStatus === 'connected' ?
+        userMenu(currentUser, history) :
+        <Menu.Item key="7" style={{ float: 'right' }} onClick={() => Meteor.reconnect()}><RedoOutlined /></Menu.Item>}
       {currentUser ? (
         <Menu.Item
           key="6"
           style={{ float: 'right' }}
-          onClick={() => console.log('foo')}
+          onClick={() => handleMessages(history)}
         >
           <Badge count={messageCount}>
             <MessageOutlined />

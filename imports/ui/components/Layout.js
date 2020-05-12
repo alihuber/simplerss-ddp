@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useMediaQuery } from 'react-responsive';
-import { Layout, Row, Col } from 'antd';
+import { Layout, Row, Col, Affix } from 'antd';
 import Navbar from './Navbar.js';
 import Loading from './Loading';
 import ServerConnectionContext from '../contexts/ServerConnectionContext';
@@ -12,17 +12,18 @@ const LayoutComponent = ({ children }) => {
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
   const paddingStr = isTabletOrMobile ? '0' : '0 50px';
   const connectionStatus = useContext(ServerConnectionContext);
+  const width = window.innerWidth;
   return (
     <Layout>
       <Header
         className="header"
-        style={{ lineHeight: '47px', height: '47px', padding: paddingStr }}
+        style={{ position: 'fixed', zIndex: 1, lineHeight: '47px', height: '47px', padding: paddingStr, width: width }}
       >
         <Navbar />
       </Header>
-      <Layout>
+      <Content style={{ marginTop: 48 }}>
         {connectionStatus === 'connected' ? (
-          <Content
+          <div
             style={{
               background: '#fff',
               padding: 24,
@@ -35,9 +36,9 @@ const LayoutComponent = ({ children }) => {
                 {children}
               </Col>
             </Row>
-          </Content>
+          </div>
         ) : <Loading />}
-      </Layout>
+      </Content>
     </Layout>
   );
 };

@@ -8,15 +8,15 @@
  * Copyright (c) 2018 Joe Rezendes
  */
 
-.transition-container {
+/* .transition-container {
   perspective: 800px;
-}
+} */
 
 .react-transition {
   animation-fill-mode: both;
 }
 
-@keyframes swipeUp {
+/* @keyframes swipeUp {
   from {
     transform: translate3d(0, 100vh, 0);
     opacity: 0;
@@ -52,7 +52,7 @@
   transform-origin: bottom center;
   animation-name: swipeLeft;
   animation-duration: 300ms;
-}
+} */
 
 @keyframes swipeRight {
   from {
@@ -73,7 +73,7 @@
   animation-duration: 300ms;
 }
 
-@keyframes swipeDown {
+/* @keyframes swipeDown {
   from {
     transform: translate3d(0, -100vh, 0);
     opacity: 0;
@@ -90,7 +90,7 @@
   transform-origin: bottom center;
   animation-name: swipeDown;
   animation-duration: 300ms;
-}
+} */
 
 @keyframes fadeIn {
   from {
@@ -109,7 +109,7 @@
   animation-duration: 250ms;
 }
 
-@keyframes scaleIn {
+/* @keyframes scaleIn {
   from {
     transform: translateY(-500px) scale(0.01);
   }
@@ -286,9 +286,9 @@
   to {
     transform: rotateY(0deg);
   }
-}
+} */
 
-.flip-in-y-reverse {
+/* .flip-in-y-reverse {
   animation-timing-function: linear;
   animation-name: flipInYReverse;
   animation-duration: 300ms;
@@ -301,7 +301,6 @@
   }
 
   70% {
-    /*transform:  rotate(10deg);*/
   }
 
   to {
@@ -322,7 +321,6 @@
   }
 
   70% {
-    /*transform:  rotate(10deg);*/
   }
 
   to {
@@ -357,4 +355,4 @@
   animation-name: woah;
   animation-duration: 1s;
   transform-style: preserve-3d;
-}
+} */
