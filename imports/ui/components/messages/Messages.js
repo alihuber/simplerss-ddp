@@ -18,9 +18,13 @@ const Messages = () => {
 
   const { messagesLoading, messages } = useTracker(() => {
     const handle = Meteor.subscribe('userMessages');
-    const msgs = MessagesModel.find({ userId: currentUser && currentUser._id });
+    const msgs = MessagesModel.find({ userId: currentUser && currentUser._id, isRead: false });
     return { messagesLoading: !handle.ready(), messages: msgs };
   }, [Meteor.userId()]);
+
+  const markAsRead = (messageId) => {
+    Meteor.call('markAsRead', messageId);
+  };
 
   if (messagesLoading) {
     return <Loading />;
@@ -40,7 +44,8 @@ const Messages = () => {
                 return (
                   <List.Item
                     actions={[
-                      <Button style={{ width: maxWidth - 40 }} type="primary" disabled={item.isRead}>Read!</Button>,
+                      <Button style={{ width: maxWidth - 40 }} type="primary" disabled={item.isMarkedRead} onClick={() => markAsRead(item._id)}>Read!</Button>,
+                      <Button style={{ width: maxWidth - 40 }} type="secondary" href={item.link} target="_blank">Visit</Button>,
                     ]}
                   >
                     <List.Item.Meta
@@ -54,14 +59,15 @@ const Messages = () => {
                 return (
                   <List.Item
                     actions={[
-                      <Button type="primary" disabled={item.isRead}>Read!</Button>,
+                      <Button type="primary" disabled={item.isMarkedRead} onClick={() => markAsRead(item._id)}>Read!</Button>,
+                      <Button type="secondary" href={item.link} target="_blank">Visit</Button>,
                     ]}
                   >
                     <List.Item.Meta
                       title={item.title}
                       description={desc}
                     />
-                    <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                    <div style={{ minWidth: '600px' }} dangerouslySetInnerHTML={{ __html: item.content }} />
                   </List.Item>
                 );
               }

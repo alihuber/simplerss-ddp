@@ -82,6 +82,11 @@ const userMenu = (currentUser, history) => {
             </span>
           </Menu.Item>
         ) : null}
+        <Menu.Item key="8">
+          User:
+          {' '}
+          {currentUser.username}
+        </Menu.Item>
         <Menu.Item key="4" onClick={() => handleSettings(history)}>
           <span>
             <SettingOutlined />

@@ -19,5 +19,15 @@ const logger = createLogger({
 });
 
 Meteor.methods({
-
+  markAsRead(messageId) {
+    check(messageId, String);
+    logger.log({ level: 'info', message: `got markAsRead request from _id ${this.userId}` });
+    const foundMessage = Messages.findOne({ _id: messageId, userId: this.userId });
+    if (!foundMessage) {
+      logger.log({ level: 'warn', message: `message with ${messageId} not found` });
+      throw new Error('not authorized');
+    }
+    Messages.update({ _id: messageId, userId: this.userId }, { $set: { isMarkedRead: true } });
+    logger.log({ level: 'info', message: `marked message with _id ${messageId} as read` });
+  },
 });
