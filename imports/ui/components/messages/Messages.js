@@ -18,7 +18,7 @@ const Messages = () => {
 
   const { messagesLoading, messages } = useTracker(() => {
     const handle = Meteor.subscribe('userMessages');
-    const msgs = MessagesModel.find({ userId: currentUser && currentUser._id, isRead: false });
+    const msgs = MessagesModel.find({ userId: currentUser && currentUser._id, isRead: false }, { sort: { pubDate: -1 } });
     return { messagesLoading: !handle.ready(), messages: msgs };
   }, [Meteor.userId()]);
 
