@@ -130,7 +130,7 @@ const Navbar = () => {
           style={{ float: 'right' }}
           onClick={() => handleMessages(history)}
         >
-          <Badge count={messageCount}>
+          <Badge count={messageCount} overflowCount={999}>
             <MessageOutlined />
           </Badge>
         </Menu.Item>

@@ -28,6 +28,6 @@ Meteor.publish('userMessages', function () {
           .toDate(),
       },
     },
-    { sort: { pubDate: -1 } }
+    { sort: { pubDate: 1 } }
   );
 });
