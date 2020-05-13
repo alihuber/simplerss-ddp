@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useMediaQuery } from 'react-responsive';
-import { Layout, Row, Col, Affix } from 'antd';
+import { Layout, Row, Col } from 'antd';
 import Navbar from './Navbar.js';
 import Loading from './Loading';
 import ServerConnectionContext from '../contexts/ServerConnectionContext';
