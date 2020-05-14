@@ -61,7 +61,7 @@ const Messages = () => {
                       title={item.title}
                       description={desc}
                     />
-                    <div style={maxWidthObj} dangerouslySetInnerHTML={{ __html: item.content }} />
+                    <div style={maxWidthObj} dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
                   </List.Item>
                 );
               } else {
@@ -76,7 +76,7 @@ const Messages = () => {
                       title={item.title}
                       description={desc}
                     />
-                    <div style={{ minWidth: '600px' }} dangerouslySetInnerHTML={{ __html: item.content }} />
+                    <div style={{ minWidth: '600px' }} dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
                   </List.Item>
                 );
               }
