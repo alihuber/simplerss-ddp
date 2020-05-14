@@ -96,7 +96,7 @@ export default class FetchJob {
   static fetchRSS() {
     const dueSettings = Settings.find({ nextEvent: { $lte: new Date() } }).fetch();
     logger.log({ level: 'info', message: 'running fetch job..' });
-    dueSettings.forEach((setting, idx, array) => {
+    dueSettings.forEach((setting) => {
       const user = Meteor.users.findOne({ _id: setting.userId });
       logger.log({ level: 'info', message: `running fetch job for user ${user.username} with id ${user._id}` });
 
@@ -104,21 +104,12 @@ export default class FetchJob {
       markMessages(user);
       cleanMessages(setting, user);
 
-      let event;
-      if (setting.nextEvent) {
-        event = moment(setting.nextEvent);
-      } else {
-        event = moment(new Date());
-      }
-      // sanitize nextEvent was set in the past
-      const hoursBefore = event.hours();
-      const minutesBefore = event.minutes();
-      const newEvent = moment().hours(hoursBefore).minutes(minutesBefore).add(Number(setting.interval), 'minutes');
+      const event = moment(new Date()).add(setting.interval, 'minutes');
       logger.log({
         level: 'info',
-        message: `setting new next event on setting ${setting._id} to ${newEvent} for user ${user.username} with id ${user._id}`,
+        message: `setting new next event on setting ${setting._id} to ${event} for user ${user.username} with id ${user._id}`,
       });
-      Settings.update({ _id: setting._id }, { $set: { nextEvent: newEvent.toDate() } });
+      Settings.update({ _id: setting._id }, { $set: { nextEvent: event.toDate() } });
     });
   }
 }
