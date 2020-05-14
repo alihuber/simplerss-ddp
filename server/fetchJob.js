@@ -56,7 +56,8 @@ const parseMessages = (setting) => {
                   mess.content = item.content;
                   mess.contentSnippet = item.contentSnippet;
                   mess.guid = item.guid;
-                  Messages.insert(mess);
+                  const newId = Messages.insert(mess);
+                  logger.log({ level: 'info', message: `inserting message ${newId} with title ${item.title} for user ${setting.userId}` });
                 });
               }
             },
