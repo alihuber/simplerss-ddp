@@ -48,6 +48,10 @@ const handleLogout = (history) => {
   });
 };
 
+const cleanRead = () => {
+  Meteor.call('setRead');
+};
+
 const userMenu = (currentUser, history, sort, setSort) => {
   const newSort = sort.sort === -1 ? { sort: 1 } : { sort: -1 };
   if (!currentUser || !currentUser._id) {
@@ -95,6 +99,9 @@ const userMenu = (currentUser, history, sort, setSort) => {
           Sort:
           {' '}
           {sort.sort === 1 ? <SortAscendingOutlined /> : <SortDescendingOutlined />}
+        </Menu.Item>
+        <Menu.Item key="10" onClick={() => cleanRead()}>
+          Clean read
         </Menu.Item>
         <Menu.Item key="4" onClick={() => handleSettings(history)}>
           <span>

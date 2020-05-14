@@ -10,21 +10,6 @@ import SortContext from '../../contexts/SortContext';
 import Loading from '../Loading';
 import { Messages as MessagesModel } from '../../../api/messages/constants';
 
-const fixedStyle = {
-  position: 'fixed',
-  right: '32px',
-  bottom: '102px',
-  // z-index: 2147483640;
-  // display: -webkit-box;
-  // display: -ms-flexbox;
-  // display: flex;
-  // -webkit-box-orient: vertical;
-  // -webkit-box-direction: normal;
-  // -ms-flex-direction: column;
-  // flex-direction: column;
-  cursor: 'pointer',
-};
-
 const Messages = () => {
   const animClass = useContext(AnimationContext);
   const currentUser = useContext(CurrentUserContext);
@@ -97,9 +82,6 @@ const Messages = () => {
               }
             }}
           />
-          <div style={fixedStyle}>
-            <div>UP</div>
-          </div>
         </div>
       );
     } else {

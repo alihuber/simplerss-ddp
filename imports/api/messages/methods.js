@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-import { Random } from 'meteor/random';
-import { Match, check } from 'meteor/check';
-import moment from 'moment';
+import { check } from 'meteor/check';
+import loMap from 'lodash/map';
 
 import { Messages } from './constants';
 
@@ -29,5 +28,11 @@ Meteor.methods({
     }
     Messages.update({ _id: messageId, userId: this.userId }, { $set: { isMarkedRead: true } });
     logger.log({ level: 'info', message: `marked message with _id ${messageId} as read` });
+  },
+  setRead() {
+    logger.log({ level: 'info', message: `got setRead request from _id ${this.userId}` });
+    const markedMessagesIds = loMap(Messages.find({ userId: this.userId, isMarkedRead: true, isRead: false }).fetch(), '_id');
+    Messages.update({ _id: { $in: markedMessagesIds } }, { $set: { isRead: true } }, { multi: true });
+    logger.log({ level: 'info', message: `set messages with ids ${markedMessagesIds} to read` });
   },
 });
