@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import moment from 'moment';
 import { Messages } from './constants';
@@ -17,7 +18,8 @@ Meteor.publish('messageCount', function () {
   ));
 });
 
-Meteor.publish('userMessages', function () {
+Meteor.publish('userMessages', function (sort) {
+  check(sort, Number);
   return Messages.find(
     {
       userId: this.userId,
@@ -28,6 +30,6 @@ Meteor.publish('userMessages', function () {
           .toDate(),
       },
     },
-    { sort: { pubDate: 1 } }
+    { sort: { pubDate: sort } }
   );
 });

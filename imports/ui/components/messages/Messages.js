@@ -6,21 +6,45 @@ import { List, Button } from 'antd';
 import moment from 'moment';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import AnimationContext from '../../contexts/AnimationContext';
+import SortContext from '../../contexts/SortContext';
 import Loading from '../Loading';
 import { Messages as MessagesModel } from '../../../api/messages/constants';
+
+const fixedStyle = {
+  position: 'fixed',
+  right: '32px',
+  bottom: '102px',
+  // z-index: 2147483640;
+  // display: -webkit-box;
+  // display: -ms-flexbox;
+  // display: flex;
+  // -webkit-box-orient: vertical;
+  // -webkit-box-direction: normal;
+  // -ms-flex-direction: column;
+  // flex-direction: column;
+  cursor: 'pointer',
+};
 
 const Messages = () => {
   const animClass = useContext(AnimationContext);
   const currentUser = useContext(CurrentUserContext);
+  const { sort } = useContext(SortContext);
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' });
   const maxWidth = window.innerWidth - 35;
   const maxWidthObj = isTabletOrMobile ? { maxWidth } : {};
 
   const { messagesLoading, messages } = useTracker(() => {
-    const handle = Meteor.subscribe('userMessages');
-    const msgs = MessagesModel.find({ userId: currentUser && currentUser._id, isRead: false }, { sort: { pubDate: 1 } });
+    const handle = Meteor.subscribe('userMessages', sort.sort);
+    const msgs = MessagesModel.find({ userId: currentUser && currentUser._id, isRead: false }, { sort: { pubDate: sort.sort } }).fetch();
+    msgs.sort((a, b) => {
+      if (sort.sort === 1) {
+        return a.pubDate > b.pubDate;
+      } else {
+        return b.pubDate > a.pubDate;
+      }
+    });
     return { messagesLoading: !handle.ready(), messages: msgs };
-  }, [Meteor.userId()]);
+  }, [Meteor.userId(), sort.sort]);
 
   const markAsRead = (messageId) => {
     Meteor.call('markAsRead', messageId);
@@ -73,6 +97,9 @@ const Messages = () => {
               }
             }}
           />
+          <div style={fixedStyle}>
+            <div>UP</div>
+          </div>
         </div>
       );
     } else {

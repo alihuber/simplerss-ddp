@@ -1,18 +1,21 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import { useHistory } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
-import { Menu, Badge, Affix } from 'antd';
+import { Menu, Badge } from 'antd';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import MenuOutlined from '@ant-design/icons/MenuOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
 import MessageOutlined from '@ant-design/icons/MessageOutlined';
+import SortAscendingOutlined from '@ant-design/icons/SortAscendingOutlined';
+import SortDescendingOutlined from '@ant-design/icons/SortDescendingOutlined';
 import RedoOutlined from '@ant-design/icons/RedoOutlined';
 import { toast } from 'react-toastify';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 import ServerConnectionContext from '../contexts/ServerConnectionContext';
+import SortContext from '../contexts/SortContext';
 
 const { SubMenu } = Menu;
 
@@ -45,7 +48,8 @@ const handleLogout = (history) => {
   });
 };
 
-const userMenu = (currentUser, history) => {
+const userMenu = (currentUser, history, sort, setSort) => {
+  const newSort = sort.sort === -1 ? { sort: 1 } : { sort: -1 };
   if (!currentUser || !currentUser._id) {
     return (
       <Menu.Item
@@ -87,6 +91,11 @@ const userMenu = (currentUser, history) => {
           {' '}
           {currentUser.username}
         </Menu.Item>
+        <Menu.Item key="9" onClick={() => setSort(newSort)}>
+          Sort:
+          {' '}
+          {sort.sort === 1 ? <SortAscendingOutlined /> : <SortDescendingOutlined />}
+        </Menu.Item>
         <Menu.Item key="4" onClick={() => handleSettings(history)}>
           <span>
             <SettingOutlined />
@@ -110,19 +119,22 @@ const Navbar = () => {
   const history = useHistory();
   const currentUser = useContext(CurrentUserContext);
   const connectionStatus = useContext(ServerConnectionContext);
+  const { setSort, sort } = useContext(SortContext);
   const messageCount = useTracker(() => {
     if (currentUser) {
-      Meteor.subscribe('messageCount', currentUser._id);
+      Meteor.subscribe('messageCount');
       return Counts.get('messageCountForUser');
     }
   }, [currentUser && currentUser._id]);
+
+
   return (
     <Menu theme="dark" mode="horizontal">
       <Menu.Item key="1" onClick={() => handleHome(history)}>
         Home
       </Menu.Item>
       {connectionStatus === 'connected' ?
-        userMenu(currentUser, history) :
+        userMenu(currentUser, history, sort, setSort) :
         <Menu.Item key="7" style={{ float: 'right' }} onClick={() => Meteor.reconnect()}><RedoOutlined /></Menu.Item>}
       {currentUser ? (
         <Menu.Item

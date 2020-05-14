@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
-import React from 'react';
+import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 
 import Layout from './Layout';
@@ -8,6 +8,7 @@ import Routing from './Routing';
 import AnimationContext from '../contexts/AnimationContext';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 import ServerConnectionContext from '../contexts/ServerConnectionContext';
+import SortContext from '../contexts/SortContext';
 
 toast.configure();
 
@@ -34,12 +35,16 @@ const Root = () => {
     return !handle.ready();
   }, [Meteor.userId()]);
 
+  const [sort, setSort] = useState({ sort: -1 });
+
   return (
     <>
       <ServerConnectionContext.Provider value={serverConnection}>
         <AnimationContext.Provider value={animClass}>
           <CurrentUserContext.Provider value={currentUser}>
-            <Routing LayoutComponent={layout} />
+            <SortContext.Provider value={{ sort, setSort }}>
+              <Routing LayoutComponent={layout} />
+            </SortContext.Provider>
           </CurrentUserContext.Provider>
         </AnimationContext.Provider>
       </ServerConnectionContext.Provider>
