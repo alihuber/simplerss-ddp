@@ -25,30 +25,38 @@ const parseMessages = (setting) => {
     setting.folders.forEach((folder) => {
       if (folder.subscriptions) {
         folder.subscriptions.forEach((subs) => {
+          logger.log({ level: 'info', message: `fetching for ${subs.url} ...` });
           parser.parseURL(subs.url).then(
             (res) => {
+              logger.log({ level: 'info', message: `got ${res.items.length} results...` });
               if (res.items.length > 0) {
                 res.items.forEach((item) => {
                   // if message is older than one week: don't save
+                  const creator = item.creator || item.author || res.title;
                   if (
                     moment(item.pubDate)
                       .clone()
                       .isBefore(moment().subtract(7, 'days'))
                   ) {
+                    logger.log({ level: 'info', message: `NOT saving ${item.title} from ${creator} too old` });
                     return;
                   }
                   // if title and date are already existent: don't save message again
                   const foundMessage = Messages.findOne({ title: item.title, date: item.date });
                   if (foundMessage) {
+                    logger.log({ level: 'info', message: `NOT saving ${item.title} from ${creator} duplicate title` });
                     return;
                   }
                   // if guid is already present: don't save message again
-                  const messageGuid = Messages.findOne({ guid: item.guid });
-                  if (messageGuid) {
-                    return;
+                  if (item.guid) {
+                    const messageGuid = Messages.findOne({ guid: item.guid });
+                    if (messageGuid) {
+                      logger.log({ level: 'info', message: `NOT saving ${item.title} from ${creator} duplicate guid` });
+                      return;
+                    }
                   }
                   const mess = { folder: folder.folderName, userId: setting.userId, isRead: false, isMarkedRead: false };
-                  mess.creator = item.creator || item.author || res.title;
+                  mess.creator = creator;
                   mess.date = item.date;
                   mess.title = item.title;
                   mess.link = item.link;
@@ -57,7 +65,7 @@ const parseMessages = (setting) => {
                   mess.contentSnippet = item.contentSnippet;
                   mess.guid = item.guid;
                   const newId = Messages.insert(mess);
-                  logger.log({ level: 'info', message: `inserting message ${newId} with title ${item.title} for user ${setting.userId}` });
+                  logger.log({ level: 'info', message: `inserting message ${newId} with guid ${item.guid} from ${creator} for user ${setting.userId}` });
                 });
               }
             },
