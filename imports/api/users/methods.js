@@ -17,13 +17,14 @@ const logger = createLogger({
   transports: [new transports.Console()],
 });
 
-
 Meteor.methods({
   removeUser: function (userId) {
     check(userId, String);
     const isAdmin = Meteor.users.findOne(this.userId).admin;
     if (isAdmin) {
-      logger.info(`deleted user with id ${userId}`);
+      if (Meteor.isServer) {
+        logger.info(`deleted user with id ${userId}`);
+      }
       Meteor.users.remove({ _id: userId });
     } else {
       throw new Meteor.Error('delete user error');
@@ -46,7 +47,9 @@ Meteor.methods({
       Accounts.setUsername(data._id, data.username);
       const adminSet = data.admin || false;
       Meteor.users.update({ _id: data._id }, { $set: { admin: adminSet } });
-      logger.info(`updated user with id ${data._id}, set ADMIN to ${adminSet}`);
+      if (Meteor.isServer) {
+        logger.info(`updated user with id ${data._id}, set ADMIN to ${adminSet}`);
+      }
     } else {
       throw new Meteor.Error('update user error');
     }
@@ -64,7 +67,9 @@ Meteor.methods({
       const newId = Accounts.createUser(data);
       const admin = data.admin || false;
       Meteor.users.update({ _id: newId }, { $set: { admin } });
-      logger.info(`created user with id ${newId}, set ADMIN to ${admin}`);
+      if (Meteor.isServer) {
+        logger.info(`created user with id ${newId}, set ADMIN to ${admin}`);
+      }
       if (admin) {
         const settingsObj = {
           userId: newId,
@@ -72,7 +77,9 @@ Meteor.methods({
           folders: [],
         };
         const settingsId = Settings.insert(settingsObj);
-        logger.info(`created settings with id ${settingsId} for user ${newId}`);
+        if (Meteor.isServer) {
+          logger.info(`created settings with id ${settingsId} for user ${newId}`);
+        }
       }
     } else {
       throw new Meteor.Error('add user error');

@@ -31,7 +31,9 @@ Meteor.methods({
       data.nextEvent = new Date();
       data.userId = userId;
       Settings.upsert({ userId: userId }, data);
-      logger.info(`update settings for ${userId}, set nextEvent to ${data.nextEvent}`);
+      if (Meteor.isServer) {
+        logger.info(`update settings for ${userId}, set nextEvent to ${data.nextEvent}`);
+      }
       // run fetchjob anew because maybe we altered the next event setting
       if (!Meteor.isTest) {
         Meteor.call('runFetchJob');

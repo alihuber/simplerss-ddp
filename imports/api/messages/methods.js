@@ -20,19 +20,29 @@ const logger = createLogger({
 Meteor.methods({
   markAsRead(messageId) {
     check(messageId, String);
-    logger.log({ level: 'info', message: `got markAsRead request from _id ${this.userId}` });
+    if (Meteor.isServer) {
+      logger.log({ level: 'info', message: `got markAsRead request from _id ${this.userId}` });
+    }
     const foundMessage = Messages.findOne({ _id: messageId, userId: this.userId });
     if (!foundMessage) {
-      logger.log({ level: 'warn', message: `message with ${messageId} not found` });
+      if (Meteor.isServer) {
+        logger.log({ level: 'warn', message: `message with ${messageId} not found` });
+      }
       throw new Error('not authorized');
     }
     Messages.update({ _id: messageId, userId: this.userId }, { $set: { isMarkedRead: true } });
-    logger.log({ level: 'info', message: `marked message with _id ${messageId} as read` });
+    if (Meteor.isServer) {
+      logger.log({ level: 'info', message: `marked message with _id ${messageId} as read` });
+    }
   },
   setRead() {
-    logger.log({ level: 'info', message: `got setRead request from _id ${this.userId}` });
+    if (Meteor.isServer) {
+      logger.log({ level: 'info', message: `got setRead request from _id ${this.userId}` });
+    }
     const markedMessagesIds = loMap(Messages.find({ userId: this.userId, isMarkedRead: true, isRead: false }).fetch(), '_id');
     Messages.update({ _id: { $in: markedMessagesIds } }, { $set: { isRead: true } }, { multi: true });
-    logger.log({ level: 'info', message: `set messages with ids ${markedMessagesIds} to read` });
+    if (Meteor.isServer) {
+      logger.log({ level: 'info', message: `set messages with ids ${markedMessagesIds} to read` });
+    }
   },
 });
