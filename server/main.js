@@ -1,11 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
+import { SyncedCron } from 'meteor/littledata:synced-cron';
 import { onPageLoad } from 'meteor/server-render';
 import loMap from 'lodash/map';
 import './publications.js';
 import '../imports/startup/server/methods';
 import { Settings } from '../imports/api/settings/constants';
-import './agenda';
+import FetchJob from './fetchJob';
 
 const { createLogger, transports, format } = require('winston');
 
@@ -51,3 +52,17 @@ onPageLoad((sink) => {
   //   `Server time: ${new Date}`
   // );
 });
+
+SyncedCron.add({
+  name: 'fetch RSS',
+  schedule: function (parser) {
+    // parser is a later.parse object
+    return parser.text('every 1 minute');
+  },
+  job: async function () {
+    const res = await FetchJob.fetchRSS();
+    return res;
+  },
+});
+
+SyncedCron.start();

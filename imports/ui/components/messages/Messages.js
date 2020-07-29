@@ -35,6 +35,8 @@ const Messages = () => {
     Meteor.call('markAsRead', messageId);
   };
 
+  // TODO: jump to top on changes in loading/sort
+  // TODO: virtualize list
   if (messagesLoading) {
     return <Loading />;
   }
