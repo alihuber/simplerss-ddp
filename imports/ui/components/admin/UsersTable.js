@@ -162,7 +162,7 @@ const UsersTable = () => {
             hour: '2-digit',
             minute: '2-digit',
           };
-          return <span>{date.toLocaleDateString('de-DE', options)}</span>;
+          return <span>{date?.toLocaleDateString('de-DE', options)}</span>;
         },
       },
       actionCol,
