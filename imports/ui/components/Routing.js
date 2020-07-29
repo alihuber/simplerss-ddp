@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import HomePage from './HomePage.js';
-import Login from './Login.js';
-import NotFoundPage from './NotFoundPage';
-import Users from './admin/Users';
-import Settings from './settings/Settings';
-import Messages from './messages/Messages';
+import HomePage from './HomePage';
+import Loading from './Loading';
+
+const Login = lazy(() => import('./Login'));
+const NotFoundPage = lazy(() => import('./NotFoundPage'));
+const Users = lazy(() => import('./admin/Users'));
+const Settings = lazy(() => import('./settings/Settings'));
+const Messages = lazy(() => import('./messages/Messages'));
+const renderLoader = () => <Loading />;
 
 const Routing = ({ LayoutComponent }) => {
   const LoadingLayout = LayoutComponent;
@@ -20,19 +23,29 @@ const Routing = ({ LayoutComponent }) => {
               <HomePage />
             </Route>
             <Route exact path="/login">
-              <Login />
+              <Suspense fallback={renderLoader()}>
+                <Login />
+              </Suspense>
             </Route>
             <Route exact path="/users">
-              <Users />
+              <Suspense fallback={renderLoader()}>
+                <Users />
+              </Suspense>
             </Route>
             <Route exact path="/settings">
-              <Settings />
+              <Suspense fallback={renderLoader()}>
+                <Settings />
+              </Suspense>
             </Route>
             <Route exact path="/messages">
-              <Messages />
+              <Suspense fallback={renderLoader()}>
+                <Messages />
+              </Suspense>
             </Route>
             <Route exact>
-              <NotFoundPage />
+              <Suspense fallback={renderLoader()}>
+                <NotFoundPage />
+              </Suspense>
             </Route>
           </Switch>
         </LoadingLayout>
