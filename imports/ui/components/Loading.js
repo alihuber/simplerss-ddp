@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { ScaleLoader } from 'react-spinners';
+import { ClipLoader } from 'react-spinners';
 import { Row } from 'antd';
 import AnimationContext from '../contexts/AnimationContext';
 
@@ -13,7 +13,7 @@ const Loading = () => {
         align="middle"
         style={{ height: '35rem' }}
       >
-        <ScaleLoader color="#030e21" loading />
+        <ClipLoader color="#030e21" loading size={70} />
       </Row>
     </div>
   );
