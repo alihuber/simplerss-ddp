@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
 import { useMediaQuery } from 'react-responsive';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { List, Button } from 'antd';
 import moment from 'moment';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
@@ -28,15 +28,18 @@ const Messages = () => {
         return b.pubDate > a.pubDate;
       }
     });
+
     return { messagesLoading: !handle.ready(), messages: msgs };
   }, [Meteor.userId(), sort.sort]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [sort, messages.length]);
 
   const markAsRead = (messageId) => {
     Meteor.call('markAsRead', messageId);
   };
 
-  // TODO: jump to top on changes in loading/sort
-  // TODO: virtualize list
   if (messagesLoading) {
     return <Loading />;
   }
