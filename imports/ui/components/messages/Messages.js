@@ -71,17 +71,22 @@ const Messages = () => {
                 );
               } else {
                 return (
-                  <List.Item
-                    actions={[
-                      <Button type="primary" disabled={item.isMarkedRead} onClick={() => markAsRead(item._id)}>Read!</Button>,
-                      <Button type="secondary" href={item.link} target="_blank">Visit</Button>,
-                    ]}
-                  >
-                    <List.Item.Meta
-                      title={item.title}
-                      description={desc}
-                    />
-                    <div style={{ minWidth: '600px' }} dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
+                  <List.Item>
+                    <b>{item.title}</b>
+                    <br />
+                    {desc}
+                    <br />
+                    <div dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
+                    <br />
+                    <p>
+                      <div style={{ width: '50%', float: 'left' }}>
+                        <Button style={{ width: '100%' }} type="primary" disabled={item.isMarkedRead} onClick={() => markAsRead(item._id)}>Read!</Button>
+                      </div>
+                      <div style={{ width: '50%', float: 'left' }}>
+                        <Button style={{ width: '100%' }} type="secondary" href={item.link} target="_blank">Visit</Button>
+                      </div>
+                    </p>
+                    <br />
                   </List.Item>
                 );
               }
