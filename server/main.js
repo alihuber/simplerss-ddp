@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { SyncedCron } from 'meteor/littledata:synced-cron';
-import { onPageLoad } from 'meteor/server-render';
 import loMap from 'lodash/map';
 import './publications.js';
 import '../imports/startup/server/methods';
@@ -45,18 +44,13 @@ Meteor.startup(() => {
   logger.info(`server started... registered users: ${Meteor.users.find({}).fetch().length}`);
 });
 
-onPageLoad((sink) => {
-  // Code to run on every request.
-  // sink.renderIntoElementById(
-  //   "server-render-target",
-  //   `Server time: ${new Date}`
-  // );
+Accounts.config({
+  forbidClientAccountCreation: true,
 });
 
 SyncedCron.add({
   name: 'fetch RSS',
   schedule: function (parser) {
-    // parser is a later.parse object
     return parser.text('every 1 minute');
   },
   job: async function () {
