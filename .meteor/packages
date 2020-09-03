@@ -13,7 +13,7 @@ ecmascript@0.14.3              # Enable ECMAScript2015+ syntax in app code
 shell-server@0.5.0            # Server-side component of the `meteor shell` command
 webapp@1.9.1                  # Serves a Meteor app over HTTP
 server-render@0.3.1           # Support for server-side rendering
-accounts-password@1.6.0
+accounts-password@1.6.2
 react-meteor-data
 mobile-experience@1.1.0
 cultofcoders:mocha
