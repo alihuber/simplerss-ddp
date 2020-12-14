@@ -155,7 +155,7 @@ const Navbar = () => {
           onClick={() => handleMessages(history)}
         >
           <Badge count={messageCount} overflowCount={999}>
-            <MessageOutlined />
+            <MessageOutlined style={{ color: 'white' }} />
           </Badge>
         </Menu.Item>
       )
