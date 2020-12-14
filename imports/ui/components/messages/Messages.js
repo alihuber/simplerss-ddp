@@ -78,14 +78,14 @@ const Messages = () => {
                     <br />
                     <div dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
                     <br />
-                    <p>
+                    <span style={{ width: '100%' }}>
                       <div style={{ width: '50%', float: 'left' }}>
                         <Button style={{ width: '100%' }} type="primary" disabled={item.isMarkedRead} onClick={() => markAsRead(item._id)}>Read!</Button>
                       </div>
                       <div style={{ width: '50%', float: 'left' }}>
                         <Button style={{ width: '100%' }} type="secondary" href={item.link} target="_blank">Visit</Button>
                       </div>
-                    </p>
+                    </span>
                     <br />
                   </List.Item>
                 );
