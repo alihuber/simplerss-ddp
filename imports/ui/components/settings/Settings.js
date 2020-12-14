@@ -27,6 +27,10 @@ const settingsSchema = new SimpleSchema({
     defaultValue: '60',
     allowedValues: ['1', '2', '10', '15', '30', '45', '60', '120'],
   },
+  blocklist: {
+    type: Array,
+  },
+  'blocklist.$': { type: String },
   folders: {
     type: Array,
   },
@@ -78,6 +82,7 @@ const Settings = () => {
   const model = {};
   model.interval = userSettings?.interval || '60';
   model.folders = userSettings?.folders || [];
+  model.blocklist = userSettings?.blocklist || [];
 
   if (settingsLoading) {
     return <Loading />;

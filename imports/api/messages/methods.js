@@ -1,8 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import loMap from 'lodash/map';
+import moment from 'moment';
 
 import { Messages } from './constants';
+import { Settings } from '../settings/constants';
 
 const { createLogger, transports, format } = require('winston');
 
@@ -44,5 +46,33 @@ Meteor.methods({
     if (Meteor.isServer) {
       logger.log({ level: 'info', message: `set messages with ids ${markedMessagesIds} to read` });
     }
+  },
+  countMessagesForUser() {
+    if (!this.userId) {
+      return 0;
+    }
+    const userSettings = Settings.findOne({ userId: this.userId });
+    const blocklist = userSettings?.blocklist || [];
+    const foundMessages = Messages.find(
+      {
+        userId: this.userId,
+        isMarkedRead: false,
+        pubDate: {
+          $gte: moment()
+            .subtract(3, 'days')
+            .toDate(),
+        },
+      },
+    ).fetch();
+    return foundMessages.filter((m) => {
+      if (blocklist.some((b) => {
+        const lowerBlock = b.toLowerCase();
+        return m.title.toLowerCase().includes(lowerBlock) ||
+          m.content.toLowerCase().includes(lowerBlock) || m.contentSnippet.toLowerCase().includes(lowerBlock);
+      })) {
+        return false;
+      }
+      return true;
+    }).length;
   },
 });

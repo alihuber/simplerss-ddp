@@ -19,5 +19,4 @@ mobile-experience@1.1.0
 cultofcoders:mocha
 lmieulet:meteor-coverage
 xolvio:cleaner
-tmeasday:publish-counts
 littledata:synced-cron

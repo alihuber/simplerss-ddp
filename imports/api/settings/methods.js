@@ -23,6 +23,7 @@ Meteor.methods({
     const pattern = {
       interval: String,
       folders: Match.Maybe([folderPattern]),
+      blocklist: Match.Maybe([String]),
       _id: Match.Maybe(String),
     };
     check(data, pattern);

@@ -1,6 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { useTracker } from 'meteor/react-meteor-data';
-import { Counts } from 'meteor/tmeasday:publish-counts';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import { Menu, Badge } from 'antd';
@@ -133,12 +131,14 @@ const Navbar = () => {
   const currentUser = useContext(CurrentUserContext);
   const connectionStatus = useContext(ServerConnectionContext);
   const { setSort, sort } = useContext(SortContext);
-  const messageCount = useTracker(() => {
-    if (currentUser) {
-      Meteor.subscribe('messageCount');
-      return Counts.get('messageCountForUser');
+  const [count, setCount] = useState(0);
+  Meteor.setInterval(() => {
+    if (Meteor.userId()) {
+      Meteor.call('countMessagesForUser', (err, res) => {
+        setCount(res);
+      });
     }
-  }, [currentUser && currentUser._id]);
+  }, 5000);
 
   return (
     <Menu theme="dark" mode="horizontal">
@@ -154,7 +154,7 @@ const Navbar = () => {
           style={{ float: 'right' }}
           onClick={() => handleMessages(history)}
         >
-          <Badge count={messageCount} overflowCount={999}>
+          <Badge count={count} overflowCount={999}>
             <MessageOutlined style={{ color: 'white' }} />
           </Badge>
         </Menu.Item>

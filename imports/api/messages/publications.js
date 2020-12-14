@@ -1,26 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
-import { Counts } from 'meteor/tmeasday:publish-counts';
 import moment from 'moment';
 import { Messages } from './constants';
-
-Meteor.publish('messageCount', function () {
-  Counts.publish(this, 'messageCountForUser', Messages.find(
-    {
-      userId: this.userId,
-      isMarkedRead: false,
-      pubDate: {
-        $gte: moment()
-          .subtract(3, 'days')
-          .toDate(),
-      },
-    }
-  ));
-});
+import { Settings } from '../settings/constants';
 
 Meteor.publish('userMessages', function (sort) {
   check(sort, Number);
-  return Messages.find(
+  const userSettings = Settings.findOne({ userId: this.userId });
+  const blocklist = userSettings?.blocklist || [];
+  const foundMessages = Messages.find(
     {
       userId: this.userId,
       isRead: false,
@@ -31,5 +19,17 @@ Meteor.publish('userMessages', function (sort) {
       },
     },
     { sort: { pubDate: sort } }
-  );
+  ).fetch();
+  const foundIds = foundMessages.filter((m) => {
+    if (blocklist.some((b) => {
+      const lowerBlock = b.toLowerCase();
+      return m.title.toLowerCase().includes(lowerBlock) ||
+        m.content.toLowerCase().includes(lowerBlock) || m.contentSnippet.toLowerCase().includes(lowerBlock);
+    })) {
+      return false;
+    }
+    return true;
+  }).map((m) => m._id);
+
+  return Messages.find({ _id: { $in: foundIds } });
 });
