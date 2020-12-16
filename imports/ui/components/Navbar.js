@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import { Menu, Badge } from 'antd';
@@ -125,6 +125,26 @@ const userMenu = (currentUser, history, sort, setSort, location) => {
   }
 };
 
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      const id = Meteor.setInterval(tick, delay);
+      return () => Meteor.clearInterval(id);
+    }
+  }, [delay]);
+}
+
 const Navbar = () => {
   const history = useHistory();
   const location = useLocation();
@@ -132,7 +152,7 @@ const Navbar = () => {
   const connectionStatus = useContext(ServerConnectionContext);
   const { setSort, sort } = useContext(SortContext);
   const [count, setCount] = useState(0);
-  Meteor.setInterval(() => {
+  useInterval(() => {
     if (Meteor.userId()) {
       Meteor.call('countMessagesForUser', (err, res) => {
         setCount(res);
