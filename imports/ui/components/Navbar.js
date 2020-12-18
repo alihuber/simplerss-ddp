@@ -154,9 +154,11 @@ const Navbar = () => {
   const [count, setCount] = useState(0);
   useInterval(() => {
     if (Meteor.userId()) {
-      Meteor.call('countMessagesForUser', (err, res) => {
-        setCount(res);
-      });
+      if (!document.hidden) {
+        Meteor.call('countMessagesForUser', (err, res) => {
+          setCount(res);
+        });
+      }
     }
   }, 5000);
 
