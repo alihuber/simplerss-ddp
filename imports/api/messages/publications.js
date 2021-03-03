@@ -13,23 +13,28 @@ Meteor.publish('userMessages', function (sort) {
       userId: this.userId,
       isRead: false,
       pubDate: {
-        $gte: moment()
-          .subtract(3, 'days')
-          .toDate(),
+        $gte: moment().subtract(3, 'days').toDate(),
       },
     },
     { sort: { pubDate: sort } }
   ).fetch();
-  const foundIds = foundMessages.filter((m) => {
-    if (blocklist.some((b) => {
-      const lowerBlock = b.toLowerCase();
-      return m.title.toLowerCase().includes(lowerBlock) ||
-        m.content.toLowerCase().includes(lowerBlock) || m.contentSnippet.toLowerCase().includes(lowerBlock);
-    })) {
-      return false;
-    }
-    return true;
-  }).map((m) => m._id);
+  const foundIds = foundMessages
+    .filter((m) => {
+      if (
+        blocklist.some((b) => {
+          const lowerBlock = b.toLowerCase();
+          return (
+            (m.title && m.title.toLowerCase().includes(lowerBlock)) ||
+            (m.content && m.content.toLowerCase().includes(lowerBlock)) ||
+            (m.contentSnippet && m.contentSnippet.toLowerCase().includes(lowerBlock))
+          );
+        })
+      ) {
+        return false;
+      }
+      return true;
+    })
+    .map((m) => m._id);
 
   return Messages.find({ _id: { $in: foundIds } });
 });

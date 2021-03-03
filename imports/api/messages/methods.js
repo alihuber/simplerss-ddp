@@ -53,23 +53,24 @@ Meteor.methods({
     }
     const userSettings = Settings.findOne({ userId: this.userId });
     const blocklist = userSettings?.blocklist || [];
-    const foundMessages = Messages.find(
-      {
-        userId: this.userId,
-        isMarkedRead: false,
-        pubDate: {
-          $gte: moment()
-            .subtract(3, 'days')
-            .toDate(),
-        },
+    const foundMessages = Messages.find({
+      userId: this.userId,
+      isMarkedRead: false,
+      pubDate: {
+        $gte: moment().subtract(3, 'days').toDate(),
       },
-    ).fetch();
+    }).fetch();
     return foundMessages.filter((m) => {
-      if (blocklist.some((b) => {
-        const lowerBlock = b.toLowerCase();
-        return m.title.toLowerCase().includes(lowerBlock) ||
-          m.content.toLowerCase().includes(lowerBlock) || m.contentSnippet.toLowerCase().includes(lowerBlock);
-      })) {
+      if (
+        blocklist.some((b) => {
+          const lowerBlock = b.toLowerCase();
+          return (
+            (m.title && m.title.toLowerCase().includes(lowerBlock)) ||
+            (m.content && m.content.toLowerCase().includes(lowerBlock)) ||
+            (m.contentSnippet && m.contentSnippet.toLowerCase().includes(lowerBlock))
+          );
+        })
+      ) {
         return false;
       }
       return true;
