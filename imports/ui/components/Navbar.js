@@ -55,11 +55,7 @@ const userMenu = (currentUser, history, sort, setSort, location) => {
   const onMessages = location.pathname.includes('messages');
   if (!currentUser || !currentUser._id) {
     return (
-      <Menu.Item
-        key="2"
-        style={{ float: 'right' }}
-        onClick={() => handleLogin(history)}
-      >
+      <Menu.Item key="2" style={{ marginLeft: 'auto' }} onClick={() => handleLogin(history)}>
         Login
       </Menu.Item>
     );
@@ -67,37 +63,26 @@ const userMenu = (currentUser, history, sort, setSort, location) => {
   if (currentUser) {
     return (
       <SubMenu
-        style={{ float: 'right' }}
         key="sub1"
-        title={(
+        title={
           <span>
             <MenuOutlined />
-            {' '}
             <span>Menu</span>
           </span>
-        )}
+        }
       >
         {currentUser?.admin ? (
-          <Menu.Item
-            key="3"
-            onClick={() => handleUsers(history)}
-          >
+          <Menu.Item key="3" onClick={() => handleUsers(history)}>
             <span>
               <UserOutlined />
-              {' '}
               <span>Users</span>
             </span>
           </Menu.Item>
         ) : null}
-        <Menu.Item key="8">
-          User:
-          {' '}
-          {currentUser.username}
-        </Menu.Item>
+        <Menu.Item key="8">User: {currentUser.username}</Menu.Item>
         {onMessages ? (
           <Menu.Item key="9" onClick={() => setSort(newSort)}>
             Sort:
-            {' '}
             {sort.sort === 1 ? <SortAscendingOutlined /> : <SortDescendingOutlined />}
           </Menu.Item>
         ) : null}
@@ -109,14 +94,12 @@ const userMenu = (currentUser, history, sort, setSort, location) => {
         <Menu.Item key="4" onClick={() => handleSettings(history)}>
           <span>
             <SettingOutlined />
-            {' '}
             <span>Settings</span>
           </span>
         </Menu.Item>
         <Menu.Item key="5" onClick={() => handleLogout(history)}>
           <span>
             <LogoutOutlined />
-            {' '}
             <span>Logout</span>
           </span>
         </Menu.Item>
@@ -167,21 +150,20 @@ const Navbar = () => {
       <Menu.Item key="1" onClick={() => handleHome(history)}>
         Home
       </Menu.Item>
-      {connectionStatus === 'connected' ?
-        userMenu(currentUser, history, sort, setSort, location) :
-        <Menu.Item key="7" style={{ float: 'right' }} onClick={() => Meteor.reconnect()}><RedoOutlined /></Menu.Item>}
       {currentUser ? (
-        <Menu.Item
-          key="6"
-          style={{ float: 'right' }}
-          onClick={() => handleMessages(history)}
-        >
+        <Menu.Item key="6" style={{ marginLeft: 'auto' }} onClick={() => handleMessages(history)}>
           <Badge count={count} overflowCount={999}>
             <MessageOutlined style={{ color: 'white' }} />
           </Badge>
         </Menu.Item>
-      )
-        : null}
+      ) : null}
+      {connectionStatus === 'connected' ? (
+        userMenu(currentUser, history, sort, setSort, location)
+      ) : (
+        <Menu.Item key="7" style={{ marginLeft: 'auto' }} onClick={() => Meteor.reconnect()}>
+          <RedoOutlined />
+        </Menu.Item>
+      )}
     </Menu>
   );
 };

@@ -17,6 +17,7 @@ describe('delete-user', () => {
     cy.get('button[type=submit]').click();
 
     cy.url().should('eq', 'http://localhost:3000/');
+    cy.wait(2000);
 
     cy.window().then(() => {
       cy.contains('Menu').click();
@@ -30,9 +31,7 @@ describe('delete-user', () => {
         cy.contains('OK').click();
         cy.get('table').should('not.contain', 'testuser');
         // header tr, 1 user tr
-        cy.get('table')
-          .find('tr')
-          .should('have.length', 2);
+        cy.get('table').find('tr').should('have.length', 2);
       });
     });
   });

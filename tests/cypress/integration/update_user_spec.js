@@ -14,6 +14,7 @@ describe('update-user', () => {
     cy.get('button[type=submit]').click();
 
     cy.url().should('eq', 'http://localhost:3000/');
+    cy.wait(2000);
 
     cy.window().then(() => {
       cy.contains('Menu').click();
@@ -25,22 +26,19 @@ describe('update-user', () => {
         cy.get('table').should('contain', 'testuser');
         cy.get('button[id=editUser_ryfEzeGqzRvW7FbL5').click();
 
-        cy.get('#uniforms-0001-0001')
-          .clear()
-          .type('newuser');
+        cy.get('input[name=username]').clear().type('newuser');
         cy.get('button[type=submit]').click();
 
         cy.wait(1000);
         cy.get('table').should('not.contain', 'testuser');
         cy.get('table').should('contain', 'newuser');
         // header tr and 2 users tr
-        cy.get('table')
-          .find('tr')
-          .should('have.length', 3);
+        cy.get('table').find('tr').should('have.length', 3);
 
         // login with updated username
         cy.contains('Menu').click();
         cy.contains('Logout').click();
+        cy.wait(2000);
         cy.window().then(() => {
           cy.url().should('eq', 'http://localhost:3000/');
 
@@ -71,6 +69,7 @@ describe('update-user', () => {
     cy.get('button[type=submit]').click();
 
     cy.url().should('eq', 'http://localhost:3000/');
+    cy.wait(2000);
 
     cy.window().then(() => {
       cy.contains('Menu').click();
@@ -82,9 +81,7 @@ describe('update-user', () => {
         cy.get('table').should('contain', 'testuser');
         cy.get('button[id=editUser_ryfEzeGqzRvW7FbL5').click();
 
-        cy.get('#uniforms-0001-0001')
-          .clear()
-          .type('newuser');
+        cy.get('input[name=username]').clear().type('newuser');
         cy.get('input[name=password]').type('newpassword');
         cy.get('button[role="switch"]').click();
         cy.get('button[type=submit]').click();
@@ -93,13 +90,12 @@ describe('update-user', () => {
         cy.get('table').should('not.contain', 'testuser');
         cy.get('table').should('contain', 'newuser');
         // header tr and 2 users tr
-        cy.get('table')
-          .find('tr')
-          .should('have.length', 3);
+        cy.get('table').find('tr').should('have.length', 3);
 
         // login with updated user
         cy.contains('Menu').click();
         cy.contains('Logout').click();
+        cy.wait(2000);
         cy.window().then(() => {
           cy.url().should('eq', 'http://localhost:3000/');
 

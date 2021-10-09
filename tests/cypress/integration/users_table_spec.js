@@ -17,6 +17,7 @@ describe('display-users-table', () => {
     cy.get('button[type=submit]').click();
 
     cy.url().should('eq', 'http://localhost:3000/');
+    cy.wait(2000);
 
     cy.window().then(() => {
       cy.contains('Menu').click();
@@ -31,6 +32,7 @@ describe('display-users-table', () => {
     cy.get('button[type=submit]').click();
 
     cy.url().should('eq', 'http://localhost:3000/');
+    cy.wait(2000);
 
     cy.window().then(() => {
       cy.contains('Menu').click();
@@ -45,6 +47,7 @@ describe('display-users-table', () => {
     cy.get('button[type=submit]').click();
 
     cy.url().should('eq', 'http://localhost:3000/');
+    cy.wait(2000);
 
     cy.window().then(() => {
       cy.contains('Menu').click();

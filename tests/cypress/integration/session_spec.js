@@ -17,14 +17,17 @@ describe('login-logout-user', () => {
     cy.get('button[type=submit]').click();
 
     cy.url().should('eq', 'http://localhost:3000/');
+    cy.wait(2000);
 
     cy.window().then((win) => {
       // this allows accessing the window object within the browser
       const user = win.Meteor.user();
       expect(user).to.exist;
       expect(user.username).to.equal('testuser');
+      cy.wait(2000);
       cy.contains('Menu').click();
       cy.contains('Logout').click();
+      cy.wait(2000);
 
       cy.window().then((win2) => {
         cy.url().should('eq', 'http://localhost:3000/');
