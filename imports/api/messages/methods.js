@@ -51,6 +51,9 @@ Meteor.methods({
     if (!this.userId) {
       return 0;
     }
+    if (Meteor.isServer) {
+      logger.log({ level: 'info', message: `got countMessagesForUser request from _id ${this.userId}` });
+    }
     const userSettings = Settings.findOne({ userId: this.userId });
     const blocklist = userSettings?.blocklist || [];
     const foundMessages = Messages.find({
@@ -75,5 +78,15 @@ Meteor.methods({
       }
       return true;
     }).length;
+  },
+  getUserSettings() {
+    if (Meteor.isServer) {
+      logger.log({ level: 'info', message: `got getUserSettings request from _id ${this.userId}` });
+    }
+    if (!this.userId) {
+      return {};
+    }
+    const userSettings = Settings.findOne({ userId: this.userId });
+    return userSettings;
   },
 });

@@ -143,7 +143,7 @@ const Navbar = () => {
         });
       }
     }
-  }, 5000);
+  }, 1000);
 
   return (
     <Menu theme="dark" mode="horizontal">

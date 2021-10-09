@@ -21,7 +21,7 @@ Meteor.methods({
     const subscriptionPattern = { url: String };
     const folderPattern = { folderName: String, subscriptions: Match.Maybe([subscriptionPattern]) };
     const pattern = {
-      interval: String,
+      interval: Number,
       folders: Match.Maybe([folderPattern]),
       blocklist: Match.Maybe([String]),
       _id: Match.Maybe(String),
