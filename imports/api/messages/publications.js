@@ -1,23 +1,18 @@
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check';
 import moment from 'moment';
 import { Messages } from './constants';
 import { Settings } from '../settings/constants';
 
-Meteor.publish('userMessages', function (sort) {
-  check(sort, Number);
+Meteor.publish('userMessages', function () {
   const userSettings = Settings.findOne({ userId: this.userId });
   const blocklist = userSettings?.blocklist || [];
-  const foundMessages = Messages.find(
-    {
-      userId: this.userId,
-      isRead: false,
-      pubDate: {
-        $gte: moment().subtract(3, 'days').toDate(),
-      },
+  const foundMessages = Messages.find({
+    userId: this.userId,
+    isRead: false,
+    pubDate: {
+      $gte: moment().subtract(3, 'days').toDate(),
     },
-    { sort: { pubDate: sort } }
-  ).fetch();
+  }).fetch();
   const foundIds = foundMessages
     .filter((m) => {
       if (
