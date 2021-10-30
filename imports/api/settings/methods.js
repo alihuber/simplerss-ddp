@@ -21,16 +21,18 @@ Meteor.methods({
     const subscriptionPattern = { url: String };
     const folderPattern = { folderName: String, subscriptions: Match.Maybe([subscriptionPattern]) };
     const pattern = {
-      interval: Number,
+      interval: String,
       folders: Match.Maybe([folderPattern]),
       blocklist: Match.Maybe([String]),
       _id: Match.Maybe(String),
     };
     check(data, pattern);
     check(userId, String);
+    const parsedInterval = parseInt(data.interval, 10);
     if (userId === this.userId) {
       data.nextEvent = new Date();
       data.userId = userId;
+      data.interval = parsedInterval;
       Settings.upsert({ userId: userId }, data);
       if (Meteor.isServer) {
         logger.info(`update settings for ${userId}, set nextEvent to ${data.nextEvent}`);
